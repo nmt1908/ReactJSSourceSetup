@@ -1,0 +1,35 @@
+{
+    "app_name": "LEO-TheOrigin",
+    "welcome": "Chào mừng bạn đến với LEO-TheOrigin",
+    "description": "Đây là tác phẩm khởi đầu được thiết kế chuẩn Senior bởi LEO.",
+    "home": "Trang chủ",
+    "about": "Giới thiệu",
+    "change_language": "Đổi ngôn ngữ",
+    "personal_intro": "Chào mọi người, mình là Tâm (LEO). Mình là một nhà phát triển web đam mê xây dựng những trải nghiệm số sạch sẽ, hiệu năng cao và có tính thẩm mỹ. Source code này chính là \"chữ ký\" của mình về một dự án chuẩn mực.",
+    "contact_me": "Liên hệ với mình",
+    "github": "GitHub",
+    "dob": "19/08/2003",
+    "role": "Senior Frontend Architect",
+    "features": {
+        "speed_title": "Tốc độ & Hiệu năng",
+        "speed_desc": "Sử dụng Vite 7 và React 19 để tối ưu hóa thời gian load và build nhanh nhất.",
+        "structure_title": "Cấu trúc File Sạch",
+        "structure_desc": "Chia theo logic Features, dễ bảo trì và mở rộng cho team lớn.",
+        "realtime_title": "Sẵn Sàng Realtime",
+        "realtime_desc": "Tích hợp Socket.io kết nối thẳng tới Python FastAPI Backend.",
+        "senior_title": "Thẩm Mỹ Senior",
+        "senior_desc": "Sử dụng Shadcn UI & Framer Motion cho trải nghiệm mượt mà nhất."
+    },
+    "leo_standard": {
+        "title": "Tiêu Chuẩn LEO",
+        "description": "Mỗi dòng code trong hệ thống này đều được kiểm duyệt khắt khe: Không code rác, không re-render thừa, không logic lồng nhằng. Đây không chỉ là một boilerplate, đây là cách mà một Senior thiết lập cuộc chơi.",
+        "items": [
+            "Quản lý Server State bằng TanStack Query",
+            "Client State gọn nhẹ với Zustand",
+            "Form Validation chặt chẽ với Hook Form + Zod",
+            "Đa ngôn ngữ sẵn sàng cho dự án Global"
+        ],
+        "quote": "Code is like humor. When you have to explain it, it’s bad.",
+        "explore_agent": "Khám phá .agent instructions"
+    }
+}
