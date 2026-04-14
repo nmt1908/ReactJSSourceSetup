@@ -1,0 +1,18 @@
+{
+  "home": "首页",
+  "about": "关于",
+  "dashboard": "仪表板",
+  "machine_list": "设备列表",
+  "shift": "班次",
+  "day_shift": "白班",
+  "night_shift": "晚班",
+  "total_machines": "设备总数",
+  "running": "运行中",
+  "waiting": "待机",
+  "offline": "离线",
+  "logout": "登出",
+  "touch_to_start": "点击开始",
+  "factory_layout": "工厂布局",
+  "workshop": "F1 车间",
+  "machine": "机台"
+}

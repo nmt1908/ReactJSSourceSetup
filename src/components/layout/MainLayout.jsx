@@ -1,12 +1,12 @@
 import { Outlet } from 'react-router-dom';
-import Header from './Header';
 
 const MainLayout = () => {
     return (
-        <div className="min-h-screen bg-background font-sans antialiased text-foreground">
-            <div className="grain-overlay" aria-hidden="true" />
-            <Header />
-            <main className="pt-32 pb-20">
+        <div className="min-h-screen bg-[#050505] text-foreground font-sans antialiased overflow-x-hidden relative">
+            {/* Background Grid Decoration */}
+            <div className="fixed inset-0 bg-grid-white pointer-events-none opacity-20" aria-hidden="true" />
+            
+            <main className="relative min-h-screen w-full">
                 <Outlet />
             </main>
         </div>

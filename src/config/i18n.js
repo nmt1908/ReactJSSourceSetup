@@ -7,10 +7,12 @@ import { initReactI18next } from 'react-i18next';
 
 import vi from '../locales/vi.json';
 import en from '../locales/en.json';
+import zh from '../locales/zh.json';
 
 const resources = {
     vi: { translation: vi },
     en: { translation: en },
+    zh: { translation: zh },
 };
 
 i18n

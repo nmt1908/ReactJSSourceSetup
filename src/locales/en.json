@@ -1,35 +1,18 @@
 {
-    "app_name": "LEO-TheOrigin",
-    "welcome": "Welcome to LEO-TheOrigin",
-    "description": "This is the origin source code with senior setup by LEO.",
-    "home": "Home",
-    "about": "About",
-    "change_language": "Change Language",
-    "personal_intro": "Hi everyone, I'm Tam (LEO). I'm a web developer passionate about building clean, high-performance, and aesthetic digital experiences. This source code is my 'signature' for a standard project.",
-    "contact_me": "Contact Me",
-    "github": "GitHub",
-    "dob": "Aug 19, 2003",
-    "role": "Senior Frontend Architect",
-    "features": {
-        "speed_title": "Speed & Performance",
-        "speed_desc": "Using Vite 7 and React 19 to optimize load time and built fastest.",
-        "structure_title": "Clean File Structure",
-        "structure_desc": "Divided by Features logic, easy to maintain and scale for large teams.",
-        "realtime_title": "Realtime Ready",
-        "realtime_desc": "Integrated Socket.io connecting directly to Python FastAPI Backend.",
-        "senior_title": "Senior Aesthetics",
-        "senior_desc": "Using Shadcn UI & Framer Motion for the smoothest experience."
-    },
-    "leo_standard": {
-        "title": "The LEO Standard",
-        "description": "Every line of code in this system is strictly audited: No trash code, no redundant re-renders, no messy logic. This is not just a boilerplate, it's how a Senior sets up the game.",
-        "items": [
-            "Server State management with TanStack Query",
-            "Lightweight Client State with Zustand",
-            "Strict Form Validation with Hook Form + Zod",
-            "i18n ready for Global projects"
-        ],
-        "quote": "Code is like humor. When you have to explain it, it’s bad.",
-        "explore_agent": "Explore .agent instructions"
-    }
+  "home": "Home",
+  "about": "About",
+  "dashboard": "Dashboard",
+  "machine_list": "Machine List",
+  "shift": "Shift",
+  "day_shift": "Day Shift",
+  "night_shift": "Night Shift",
+  "total_machines": "Total Machines",
+  "running": "Running",
+  "waiting": "Waiting",
+  "offline": "Offline",
+  "logout": "Logout",
+  "touch_to_start": "Touch to Start",
+  "factory_layout": "Factory Layout",
+  "workshop": "Workshop F1",
+  "machine": "Machine"
 }

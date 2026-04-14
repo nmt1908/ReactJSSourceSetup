@@ -1,10 +1,3 @@
-# ⚛️ LEO Senior Standard Reactor (v1.0.0)
-
-> **Architected by Nguyễn Minh Tâm (AKA LEO)**  
-> *Born 19/08/2003 - Senior Frontend Mindset*
-
-## 📜 TRIẾT LÝ DỰ ÁN (VISION)
-Đây không đơn thuần là một source code khởi tạo. **LEO Senior Reactor** là một bản tuyên ngôn về sự chuyên nghiệp, sạch sẽ và hiệu năng trong lập trình React. Mỗi module, mỗi dòng code đều được tối ưu để đạt tiêu chuẩn "Pháp thuật Senior": **Không code rác, không re-render thừa, không logic lồng nhằng.**
 
 ## 🛠️ THE SENIOR STACK
 Hệ thống được vận hành bởi bộ công cụ mạnh mẽ nhất hiện nay:
@@ -47,6 +40,3 @@ Dự án tích hợp bộ hướng dẫn đặc biệt tại folder `.agent/`:
 1. `npm install`
 2. `npm run dev`
 3. Mở `.agent/system_prompt.md` để "niệm thần chú" cho trợ lý ảo của bạn.
-
----
-*© 2026 LEO Senior Reactor. Duyệt bởi Nguyễn Minh Tâm.*

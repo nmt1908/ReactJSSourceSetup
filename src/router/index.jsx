@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 import MainLayout from '@/components/layout/MainLayout';
-import HomePage from '@/pages/HomePage';
+import DashboardPage from '@/pages/DashboardPage';
+import MachineDetailPage from '@/pages/MachineDetailPage';
 import AboutPage from '@/pages/AboutPage';
 
 export const router = createBrowserRouter([
@@ -10,7 +11,11 @@ export const router = createBrowserRouter([
         children: [
             {
                 path: '/',
-                element: <HomePage />,
+                element: <DashboardPage />,
+            },
+            {
+                path: '/machine/:machineId',
+                element: <MachineDetailPage />,
             },
             {
                 path: '/about',
