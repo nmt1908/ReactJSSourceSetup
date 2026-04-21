@@ -24,6 +24,9 @@ export default {
       },
     },
     extend: {
+      screens: {
+        'touch': { 'raw': '(pointer: coarse)' },
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
