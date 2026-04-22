@@ -39,5 +39,17 @@
   "mold_size": "Mold Size",
   "mold_name": "Mold Name",
   "article_color": "Article / Colorway",
-  "mold_id": "Mold ID"
+  "mold_id": "Mold ID",
+  "unmount_confirm_title": "XÁC NHẬN XUỐNG KHUÔN?",
+  "unmount_confirm_msg": "Hệ thống sẽ ghi nhận lịch sử xuống khuôn của thiết bị này.",
+  "unmount_confirm_warning": "Lưu ý: Thao tác này ảnh hưởng trực tiếp đến dữ liệu của các công đoạn tiếp theo. Vui lòng kiểm tra kỹ trước khi xác nhận.",
+  "cancel": "HỦY BỎ",
+  "confirm_unmount": "XÁC NHẬN",
+  "unmount_success": "XUỐNG KHUÔN THÀNH CÔNG!",
+  "login_title": "ĐĂNG NHẬP HỆ THỐNG",
+  "emp_no": "MÃ SỐ NHÂN VIÊN",
+  "password": "MẬT KHẨU",
+  "please_login": "Vui lòng nhập thông tin để truy cập hệ thống",
+  "login_button": "ĐĂNG NHẬP",
+  "login_error": "Mã số hoặc mật khẩu không chính xác!"
 }

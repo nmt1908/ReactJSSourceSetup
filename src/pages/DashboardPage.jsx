@@ -1,26 +1,34 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, Maximize2, Minimize2, User } from 'lucide-react';
+import { LogOut, Maximize2, Minimize2, User as UserIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import DigitalClock from '@/components/common/DigitalClock';
 import useResponsive from '@/hooks/useResponsive';
+import { useAppStore } from '@/store/appStore';
 
 
 const DashboardPage = () => {
     const { isHighResPad } = useResponsive();
     const { t, i18n } = useTranslation();
     const navigate = useNavigate();
+    const user = useAppStore(state => state.user);
+    const logout = useAppStore(state => state.logout);
+    
     const [isFullscreen, setIsFullscreen] = useState(!!document.fullscreenElement);
     const [showUserMenu, setShowUserMenu] = useState(false);
 
-    // Generate 24 dummy machines (F1_01 to F1_24)
-    const machines = Array.from({ length: 24 }, (_, i) => {
-        const id = `F1_${String(i + 1).padStart(2, '0')}`;
-        const hasMold = i < 15;
-        return { id, hasMold };
-    });
+    // 1. Memoize machine list to prevent recreation on every render
+    const machines = useMemo(() => Array.from({ length: 24 }, (_, i) => ({
+        id: `F1_${(i + 1).toString().padStart(2, '0')}`,
+        hasMold: i < 15
+    })), []);
+
+    // 2. Memoize navigation handler
+    const handleMachineClick = useCallback((id) => {
+        navigate(`/machine/${id}`);
+    }, [navigate]);
 
     const toggleFullscreen = () => {
         if (!document.fullscreenElement) {
@@ -41,38 +49,18 @@ const DashboardPage = () => {
             "h-screen w-full bg-[#050505] flex flex-col items-center p-4 relative overflow-hidden font-sans select-none border-none",
             isHighResPad && "p-2"
         )}>
-            {/* Animated Background Decor */}
-            <motion.div 
-                animate={{ 
-                    x: [0, 50, 0], 
-                    y: [0, 30, 0],
-                    scale: [1, 1.1, 1] 
-                }}
-                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/5 rounded-full blur-[120px] pointer-events-none" 
-            />
-            <motion.div 
-                animate={{ 
-                    x: [0, -40, 0], 
-                    y: [0, -60, 0],
-                    scale: [1, 1.2, 1] 
-                }}
-                transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-                className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-500/5 rounded-full blur-[120px] pointer-events-none" 
-            />
+            {/* Static Background Decor - High Performance (No Blur Filters) */}
+            <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] pointer-events-none opacity-40" 
+                 style={{ background: 'radial-gradient(circle, rgba(37,99,235,0.08) 0%, transparent 70%)' }} />
+            <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] pointer-events-none opacity-30" 
+                 style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.05) 0%, transparent 70%)' }} />
 
-            {/* Speed Lines Background */}
-            <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
+            {/* Static Speed Lines Background */}
+            <div className="absolute inset-0 opacity-[0.02] pointer-events-none" 
                  style={{ 
                      backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 100px, #ffffff 100px, #ffffff 101px)',
                      backgroundSize: '200% 200%'
-                 }}>
-                <motion.div 
-                    animate={{ backgroundPosition: ['0% 0%', '100% 100%'] }}
-                    transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-                    className="absolute inset-0"
-                />
-            </div>
+                 }} />
 
             <div className={cn(
                 "w-full flex justify-between items-center z-50 mb-2 px-6 pt-4 sticky top-0",
@@ -87,11 +75,11 @@ const DashboardPage = () => {
                             isHighResPad && "px-8 py-3"
                         )}
                     >
-                        <User className="w-5 h-5 text-blue-500" />
+                        <UserIcon className="w-5 h-5 text-blue-500" />
                         <span className={cn(
                             "text-zinc-100 text-sm font-black italic tracking-widest uppercase",
                             isHighResPad && "text-base"
-                        )}>047409</span>
+                        )}>{user?.empNo || 'GUEST'}</span>
                     </button>
 
                     <AnimatePresence>
@@ -104,7 +92,13 @@ const DashboardPage = () => {
                                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
                                     className="absolute top-[120%] left-0 w-56 glass-card rounded-[2rem] z-50 p-1.5 shadow-3xl border-blue-500/20"
                                 >
-                                    <button className="w-full flex items-center gap-4 px-6 py-5 text-red-500 hover:bg-red-500/10 transition-all font-black uppercase text-[11px] rounded-[1.5rem]">
+                                    <button 
+                                        onClick={() => {
+                                            logout();
+                                            navigate('/login');
+                                        }}
+                                        className="w-full flex items-center gap-4 px-6 py-5 text-red-500 hover:bg-red-500/10 transition-all font-black uppercase text-[11px] rounded-[1.5rem]"
+                                    >
                                         <LogOut className="w-5 h-5" />
                                         {t('logout')}
                                     </button>
@@ -183,77 +177,12 @@ const DashboardPage = () => {
                     isHighResPad && "px-4 mb-4 gap-7"
                 )}
             >
-                {/* HUD Light Sweep Effect - Optimized Frequency */}
-                <motion.div 
-                    animate={{ left: ['-100%', '250%'] }}
-                    transition={{ duration: 2.5, repeat: Infinity, ease: "linear", repeatDelay: 10 }}
-                    style={{ willChange: 'transform' }}
-                    className="absolute top-0 bottom-0 w-64 bg-gradient-to-r from-transparent via-white/[0.04] to-transparent skew-x-[35deg] z-20 pointer-events-none"
-                />
-
-                {machines.map((machine, index) => (
-                    <motion.div
-                        key={machine.id}
-                        variants={{
-                            hidden: { opacity: 0, scale: 0.8, x: -20 },
-                            visible: { 
-                                opacity: 1, 
-                                scale: 1, 
-                                x: 0,
-                                transition: { type: "spring", stiffness: 450, damping: 25 }
-                            }
-                        }}
-                        whileHover="hover"
-                        whileTap={{ scale: 0.96 }}
-                        onClick={() => navigate(`/machine/${machine.id}`)}
-                        className={cn(
-                            "relative flex flex-col items-center justify-center border transition-all duration-200 cursor-pointer overflow-hidden rounded-[2.5rem] lg:rounded-[3.5rem] transform-gpu",
-                            machine.hasMold
-                                ? "bg-blue-600 border-blue-400/40 text-white shadow-xl"
-                                : "bg-[#111218] border-amber-500/20 text-amber-500"
-                        )}
-                    >
-                        {/* Nitrous Aura - Correctly hidden by default (initial="initial") */}
-                        <motion.div 
-                            initial="initial"
-                            variants={{
-                                hover: { scale: 1.4, opacity: 0.4, filter: 'blur(40px)' },
-                                initial: { scale: 1, opacity: 0, filter: 'blur(10px)' }
-                            }}
-                            transition={{ duration: 0.3 }}
-                            className={cn(
-                                "absolute inset-0 pointer-events-none z-0",
-                                machine.hasMold ? "bg-blue-400" : "bg-amber-400"
-                            )}
-                            style={{ willChange: 'transform, opacity, filter' }}
-                        />
-                        <div className="absolute top-[12%] right-[12%]">
-                            <motion.div 
-                                animate={{ opacity: [0.4, 1, 0.4] }}
-                                transition={{ duration: 2, repeat: Infinity }}
-                                className={cn(
-                                    "w-2.5 h-2.5 md:w-3.5 md:h-3.5 rounded-full shadow-[0_0_12px_currentColor]",
-                                    machine.hasMold ? "text-emerald-400 bg-emerald-500" : "text-amber-500 bg-amber-500 shadow-amber-500/50"
-                                )} 
-                            />
-                        </div>
-
-                        <div className="flex flex-col items-center justify-center h-full relative z-10">
-                            <span className={cn(
-                                "text-[10px] md:text-[12px] font-black uppercase tracking-[0.4em] opacity-40 leading-none mb-1",
-                                machine.hasMold ? "text-white" : "text-amber-500/70"
-                            )}>
-                                F1
-                            </span>
-                            <span className={cn(
-                                "text-[clamp(3rem,10vh,6rem)] font-black italic tracking-tighter leading-none drop-shadow-2xl",
-                                machine.hasMold ? "text-white" : "text-amber-500"
-                            )}>
-                                {machine.id.split('_')[1]}
-                            </span>
-                        </div>
-                        <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 hover:opacity-100 transition-opacity pointer-events-none z-10" />
-                    </motion.div>
+                {machines.map((machine) => (
+                    <MachineCard 
+                        key={machine.id} 
+                        machine={machine} 
+                        onClick={handleMachineClick} 
+                    />
                 ))}
             </motion.div>
 
@@ -268,5 +197,64 @@ const DashboardPage = () => {
         </motion.div>
     );
 };
+
+// 3. Memoized MachineCard for maximum performance
+const MachineCard = memo(({ machine, onClick }) => {
+    return (
+        <motion.div
+            variants={{
+                hidden: { opacity: 0, scale: 0.98 },
+                visible: { 
+                    opacity: 1, 
+                    scale: 1,
+                    transition: { duration: 0.15, ease: "easeOut" }
+                }
+            }}
+            whileTap={{ scale: 0.94, filter: 'brightness(1.5)' }}
+            onClick={() => onClick(machine.id)}
+            className={cn(
+                "relative flex flex-col items-center justify-center border transition-all duration-200 cursor-pointer overflow-hidden rounded-[2.5rem] lg:rounded-[3.5rem] transform-gpu",
+                machine.hasMold
+                    ? "bg-blue-600 border-blue-400/40 text-white shadow-xl shadow-blue-900/20"
+                    : "bg-[#111218] border-amber-500/20 text-amber-500"
+            )}
+        >
+            {/* No Blur Pulse for Active Machines - High Performance */}
+            {machine.hasMold && (
+                <motion.div 
+                    animate={{ opacity: [0.1, 0.5, 0.1] }}
+                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                    className="absolute inset-0 bg-blue-400/10 pointer-events-none z-0"
+                />
+            )}
+            <div className="absolute top-[12%] right-[12%]">
+                <motion.div 
+                    animate={{ opacity: [0.4, 1, 0.4] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                    className={cn(
+                        "w-3 h-3 md:w-3.5 md:h-3.5 rounded-full",
+                        machine.hasMold ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" : "bg-amber-500 opacity-30"
+                    )} 
+                />
+            </div>
+
+            <div className="flex flex-col items-center justify-center h-full relative z-10">
+                <span className={cn(
+                    "text-[10px] md:text-[12px] font-black uppercase tracking-[0.4em] opacity-40 leading-none mb-1",
+                    machine.hasMold ? "text-white" : "text-amber-500/70"
+                )}>
+                    F1
+                </span>
+                <span className={cn(
+                    "text-[clamp(3rem,10vh,6rem)] font-black italic tracking-tighter leading-none drop-shadow-lg",
+                    machine.hasMold ? "text-white" : "text-amber-500"
+                )}>
+                    {machine.id.split('_')[1]}
+                </span>
+            </div>
+            <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 pointer-events-none z-10" />
+        </motion.div>
+    );
+});
 
 export default DashboardPage;

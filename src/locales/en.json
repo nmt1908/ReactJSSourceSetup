@@ -39,5 +39,17 @@
   "mold_size": "Mold Size",
   "mold_name": "Mold Name",
   "article_color": "Article / Colorway",
-  "mold_id": "Mold ID"
+  "mold_id": "Mold ID",
+  "unmount_confirm_title": "CONFIRM UNMOUNT?",
+  "unmount_confirm_msg": "The system will record the unmounting history for this device.",
+  "unmount_confirm_warning": "Warning: This action directly impacts data for subsequent processes. Please verify carefully before confirming.",
+  "cancel": "CANCEL",
+  "confirm_unmount": "CONFIRM",
+  "unmount_success": "UNMOUNT SUCCESSFUL!",
+  "login_title": "SYSTEM AUTHENTICATION",
+  "emp_no": "EMPLOYEE NUMBER",
+  "password": "PASSWORD",
+  "please_login": "Please enter your credentials to access the system",
+  "login_button": "LOGIN",
+  "login_error": "Invalid employee number or password!"
 }

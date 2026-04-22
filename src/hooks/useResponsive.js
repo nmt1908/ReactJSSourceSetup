@@ -14,22 +14,25 @@ export const useResponsive = () => {
     useEffect(() => {
         if (typeof window === 'undefined') return;
 
+        let timeoutId = null;
         const handleResize = () => {
-            setScreenSize({
-                width: window.innerWidth,
-                height: window.innerHeight,
-                isTouch: 'ontouchstart' in window || navigator.maxTouchPoints > 0,
-            });
+            // Debounce to prevent rapid re-renders
+            if (timeoutId) clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                setScreenSize({
+                    width: window.innerWidth,
+                    height: window.innerHeight,
+                    isTouch: 'ontouchstart' in window || navigator.maxTouchPoints > 0,
+                });
+            }, 250);
         };
 
-        // Lắng nghe sự kiện thay đổi kích thước
         window.addEventListener('resize', handleResize);
-        
-        // Log ngay lập tức để debug
-        console.log(`[useResponsive] Render: ${window.innerWidth}x${window.innerHeight} | Touch: ${screenSize.isTouch}`);
-
-        return () => window.removeEventListener('resize', handleResize);
-    }, [screenSize.isTouch]);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+            if (timeoutId) clearTimeout(timeoutId);
+        };
+    }, []);
 
     // Các trạng thái dẫn xuất (Derived States)
     // Coi là Tablet nếu có Touch hoặc chiều rộng nằm trong dải trung bình (700px - 1400px)

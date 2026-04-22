@@ -1,28 +1,24 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, memo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, Trash2, PlusCircle, User, Clock, ShieldCheck, Hash, Ruler, Tag, Package, Fingerprint } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import useResponsive from '@/hooks/useResponsive';
+import Notification from '@/components/common/Notification';
 
 const MachineDetailPage = () => {
     const { isHighResPad } = useResponsive();
     const { machineId } = useParams();
     const navigate = useNavigate();
     const { t } = useTranslation();
+    const [showConfirm, setShowConfirm] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
 
-    const machineNum = machineId?.split('_')[1] || '01';
-    const isRunning = parseInt(machineNum) <= 15;
+    const machineNum = useMemo(() => machineId?.split('_')[1] || '01', [machineId]);
+    const [hasMold, setHasMold] = useState(parseInt(machineNum) <= 15);
 
-    useEffect(() => {
-        const logSize = () => console.log(`[DEBUG] Screen: ${window.innerWidth}x${window.innerHeight} | Touch: ${'ontouchstart' in window || navigator.maxTouchPoints > 0}`);
-        logSize();
-        window.addEventListener('resize', logSize);
-        return () => window.removeEventListener('resize', logSize);
-    }, []);
-
-    const moldData = isRunning ? {
+    const moldData = useMemo(() => hasMold ? {
         toolingCode: 'MS12345-01',
         moldSize: '08',
         moldName: 'A1',
@@ -31,44 +27,22 @@ const MachineDetailPage = () => {
         mounter: '047409',
         mountedTime: '08:30:45',
         mountedDate: '14/04/2024'
-    } : null;
+    } : null, [hasMold]);
 
     return (
         <div className="h-screen w-full bg-[#050505] flex flex-col items-center p-0 relative overflow-hidden font-sans select-none">
-            {/* Animated Background Decor */}
-            <motion.div 
-                animate={{ 
-                    x: [0, 40, 0], 
-                    y: [0, -30, 0], 
-                    scale: [1, 1.15, 1] 
-                }}
-                transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-                className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-600/[0.1] rounded-full blur-[150px] pointer-events-none" 
-            />
-            
-            {/* Speed Lines Background */}
-            <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
-                 style={{ 
-                     backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 120px, #ffffff 120px, #ffffff 121px)',
-                     backgroundSize: '200% 200%'
-                 }}>
-                <motion.div 
-                    animate={{ backgroundPosition: ['0% 0%', '-100% -100%'] }}
-                    transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-                    className="absolute inset-0"
-                />
-            </div>
-            <motion.div 
-                animate={{ 
-                    x: [0, -30, 0], 
-                    y: [0, 50, 0], 
-                    scale: [1, 1.1, 1] 
-                }}
-                transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
-                className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-400/[0.05] rounded-full blur-[120px] pointer-events-none" 
-            />
+            {/* Static Background Decor - High Performance (No Blur Filters) */}
+            <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] pointer-events-none opacity-40"
+                style={{ background: 'radial-gradient(circle, rgba(37,99,235,0.08) 0%, transparent 75%)' }} />
 
-
+            {/* Static Speed Lines Background */}
+            <div className="absolute inset-0 opacity-[0.02] pointer-events-none"
+                style={{
+                    backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 120px, #ffffff 120px, #ffffff 121px)',
+                    backgroundSize: '200% 200%'
+                }} />
+            <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] pointer-events-none opacity-40"
+                style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.05) 0%, transparent 75%)' }} />
 
             {/* 3. MAIN DATA PANEL */}
             <div className={cn(
@@ -85,13 +59,6 @@ const MachineDetailPage = () => {
                 >
                     <div className="absolute inset-0 border border-blue-500/10 rounded-[2.5rem] md:rounded-[3rem] pointer-events-none" />
 
-                    {/* Light Sweep Effect */}
-                    <motion.div 
-                        animate={{ left: ['-100%', '200%'] }}
-                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", repeatDelay: 5 }}
-                        className="absolute top-0 bottom-0 w-64 bg-gradient-to-r from-transparent via-white/[0.03] to-transparent skew-x-[25deg] z-10 pointer-events-none"
-                    />
-
                     <div className="flex flex-col h-full relative z-20">
                         {/* 1. Permanent Header Row (Always visible) */}
                         <div className={cn(
@@ -100,8 +67,7 @@ const MachineDetailPage = () => {
                         )}>
                             {/* Back Button */}
                             <motion.button
-                                whileHover={{ scale: 1.05, backgroundColor: 'rgba(255,255,255,0.08)' }}
-                                whileTap={{ scale: 0.95 }}
+                                whileTap={{ scale: 0.9, backgroundColor: 'rgba(255,255,255,0.1)' }}
                                 onClick={() => navigate('/')}
                                 className="flex items-center gap-4 bg-white/[0.03] px-6 py-4 rounded-2xl border border-white/10 transition-all shadow-xl group"
                             >
@@ -121,81 +87,159 @@ const MachineDetailPage = () => {
                                     "text-blue-500 text-lg md:text-xl font-black italic mt-1 tracking-tighter pr-4 uppercase",
                                     isHighResPad && "text-base"
                                 )}>
-                                    {isRunning ? t('mold_in_use') : t('ready_to_mount')}
+                                    {hasMold ? t('mold_in_use') : t('ready_to_mount')}
                                 </span>
                             </div>
                         </div>
 
-                        {isRunning ? (
-                            <motion.div 
-                                initial="hidden"
-                                animate="visible"
-                                variants={{
-                                    hidden: { opacity: 0 },
-                                    visible: {
-                                        opacity: 1,
-                                        transition: { 
-                                            staggerChildren: 0.08, 
-                                            delayChildren: 0.1,
-                                            type: "spring",
-                                            stiffness: 260,
-                                            damping: 20
-                                        }
-                                    }
-                                }}
-                                className="flex flex-col"
-                            >
-                                <div className={cn(
-                                "grid grid-cols-12 gap-10 items-center",
-                                isHighResPad && "gap-6"
-                            )}>
-                                <div className={cn(
-                                    "col-span-12 lg:col-span-7 space-y-8",
-                                    isHighResPad && "space-y-4"
-                                )}>
-                                    <DataGroup icon={Hash} label="Tooling Code" value={moldData.toolingCode} />
+                        <AnimatePresence mode="wait">
+                            {hasMold ? (
+                                <motion.div
+                                    key="mold-info"
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: 20 }}
+                                    transition={{ duration: 0.3 }}
+                                    className="flex flex-col"
+                                >
                                     <div className={cn(
-                                        "grid grid-cols-2 gap-10",
+                                        "grid grid-cols-12 gap-10 items-center",
                                         isHighResPad && "gap-6"
                                     )}>
-                                        <DataGroup icon={Ruler} label="Mold Size" value={moldData.moldSize} />
-                                        <DataGroup icon={Tag} label="Mold Name" value={moldData.moldName} />
+                                        <div className={cn(
+                                            "col-span-12 lg:col-span-7 space-y-8",
+                                            isHighResPad && "space-y-4"
+                                        )}>
+                                            <DataGroup icon={Hash} label="Tooling Code" value={moldData.toolingCode} />
+                                            <div className={cn(
+                                                "grid grid-cols-2 gap-10",
+                                                isHighResPad && "gap-6"
+                                            )}>
+                                                <DataGroup icon={Ruler} label="Mold Size" value={moldData.moldSize} />
+                                                <DataGroup icon={Tag} label="Mold Name" value={moldData.moldName} />
+                                            </div>
+                                            <DataGroup icon={Package} label="Article / Colorway" value={moldData.article} />
+                                            <DataGroup icon={Fingerprint} label="Mold ID" value={moldData.moldId} isPrimary />
+                                        </div>
+
+                                        <div className="col-span-12 lg:col-span-5 flex items-center justify-center lg:justify-end">
+                                            <BigAction 
+                                                icon={Trash2} 
+                                                label={t('unmount_mold')} 
+                                                desc={t('unmount_desc')} 
+                                                color="red"
+                                                onClick={() => setShowConfirm(true)}
+                                            />
+                                        </div>
                                     </div>
-                                    <DataGroup icon={Package} label="Article / Colorway" value={moldData.article} />
-                                    <DataGroup icon={Fingerprint} label="Mold ID" value={moldData.moldId} isPrimary />
+
+                                    <div className={cn(
+                                        "mt-12 pt-8 border-t-2 border-white/[0.08] grid grid-cols-3 gap-12 overflow-visible",
+                                        isHighResPad && "mt-8 pt-6 gap-8"
+                                    )}>
+                                        <MetadataBlock icon={User} label={t('mounter_label')} value={moldData.mounter} />
+                                        <MetadataBlock icon={Clock} label={t('time_label')} value={moldData.mountedTime} />
+                                        <MetadataBlock icon={ShieldCheck} label={t('date_label')} value={moldData.mountedDate} />
+                                    </div>
+                                </motion.div>
+                            ) : (
+                                <motion.div 
+                                    key="empty-machine"
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.9 }}
+                                    className="flex-1 flex flex-col items-center justify-center py-10 text-center"
+                                >
+                                    <h3 className="text-4xl md:text-6xl font-black italic text-white uppercase tracking-tighter mb-10">{t('empty_machine')}</h3>
+                                    <button className="h-24 px-16 rounded-[3.5rem] bg-blue-600 text-white text-2xl font-black italic uppercase tracking-[0.2em] shadow-2xl flex items-center gap-6 active:scale-95 transition-all">
+                                        <PlusCircle className="w-10 h-10" />
+                                        {t('mount_now')}
+                                    </button>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
+                </motion.div>
+            </div>
+
+            {/* High-Alert Confirmation Dialog */}
+            <AnimatePresence>
+                {showConfirm && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 sm:p-12">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setShowConfirm(false)}
+                            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+                        />
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                            className="relative w-full max-w-xl bg-[#111218] border-2 border-red-500/50 rounded-[2.5rem] overflow-hidden shadow-[0_0_50px_rgba(239,68,68,0.2)]"
+                        >
+                            {/* Alert Header Decoration */}
+                            <div className="h-2 w-full bg-red-500/20 flex gap-1 px-1">
+                                {Array.from({ length: 40 }).map((_, i) => (
+                                    <div key={i} className="flex-1 h-full bg-red-500/40 skew-x-[-45deg]" />
+                                ))}
+                            </div>
+
+                            <div className="p-8 md:p-10 border-b border-white/5">
+                                <div className="flex items-center gap-4 mb-6">
+                                    <div className="w-12 h-12 rounded-2xl bg-red-500/20 flex items-center justify-center">
+                                        <ShieldCheck className="w-6 h-6 text-red-500" />
+                                    </div>
+                                    <h2 className="text-2xl md:text-3xl font-black italic uppercase tracking-tight text-white leading-none">
+                                        {t('unmount_confirm_title')}
+                                    </h2>
                                 </div>
 
-                                <div className="col-span-12 lg:col-span-5 flex items-center justify-center lg:justify-end">
-                                    <BigAction
-                                        icon={Trash2}
-                                        label={t('unmount_mold')}
-                                        desc={t('unmount_desc')}
-                                        color="red"
-                                    />
+                                <div className="space-y-4">
+                                    <p className="text-lg text-zinc-300 font-medium tracking-tight">
+                                        {t('unmount_confirm_msg')}
+                                    </p>
+                                    <div className="bg-red-500/10 border-l-4 border-red-500 p-4 rounded-r-xl">
+                                        <p className="text-sm text-red-400 font-bold uppercase tracking-wider leading-relaxed">
+                                            {t('unmount_confirm_warning')}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className={cn(
-                                "mt-12 pt-8 border-t-2 border-white/[0.08] grid grid-cols-3 gap-12 overflow-visible",
-                                isHighResPad && "mt-8 pt-6 gap-8"
-                            )}>
-                                <MetadataBlock icon={User} label={t('mounter_label')} value={moldData.mounter} />
-                                <MetadataBlock icon={Clock} label={t('time_label')} value={moldData.mountedTime} />
-                                <MetadataBlock icon={ShieldCheck} label={t('date_label')} value={moldData.mountedDate} />
+                            <div className="flex gap-4 p-8 bg-black/40">
+                                <motion.button
+                                    whileTap={{ scale: 0.95 }}
+                                    onClick={() => setShowConfirm(false)}
+                                    className="flex-1 py-4 rounded-2xl border border-white/10 text-white font-black uppercase tracking-widest text-sm"
+                                >
+                                    {t('cancel')}
+                                </motion.button>
+                                <motion.button
+                                    whileTap={{ scale: 0.95 }}
+                                    onClick={() => {
+                                        setShowConfirm(false);
+                                        setShowSuccess(true);
+                                        // Update state locally so the UI transitions
+                                        setHasMold(false);
+                                    }}
+                                    className="flex-1 py-4 rounded-2xl bg-red-500 text-white font-black uppercase tracking-widest text-sm shadow-[0_0_20px_rgba(239,68,68,0.4)]"
+                                >
+                                    {t('confirm_unmount')}
+                                </motion.button>
                             </div>
                         </motion.div>
-                    ) : (
-                        <div className="flex-1 flex flex-col items-center justify-center py-10 text-center">
-                            <h3 className="text-4xl md:text-6xl font-black italic text-white uppercase tracking-tighter mb-10">{t('empty_machine')}</h3>
-                            <button className="h-24 px-16 rounded-[3.5rem] bg-blue-600 text-white text-2xl font-black italic uppercase tracking-[0.2em] shadow-2xl flex items-center gap-6 active:scale-95 transition-all">
-                                <PlusCircle className="w-10 h-10" />
-                                {t('mount_now')}
-                            </button>
-                        </div>
-                    )}
-                </div>
-            </motion.div>
-        </div>
+                    </div>
+                )}
+            </AnimatePresence>
+
+            <Notification 
+                show={showSuccess}
+                message={t('unmount_success')}
+                type="success"
+                onClose={() => setShowSuccess(false)}
+            />
 
             <div className="py-2 text-zinc-500 font-black tracking-[0.8em] text-[10px] uppercase italic opacity-60">
                 F1 WORKSHOP • v2.0
@@ -204,50 +248,45 @@ const MachineDetailPage = () => {
     );
 };
 
-const DataGroup = ({ icon: Icon, label, value, isPrimary }) => {
+const DataGroup = memo(({ icon: Icon, label, value, isPrimary }) => {
     const { isHighResPad } = useResponsive();
     return (
-        <motion.div 
+        <motion.div
             variants={{
-                hidden: { opacity: 0, x: -40, filter: 'blur(10px)' },
-                visible: { 
-                    opacity: 1, 
-                    x: 0, 
-                    filter: 'blur(0px)',
-                    transition: { type: "spring", stiffness: 400, damping: 25 }
+                hidden: { opacity: 0, x: -20 },
+                visible: {
+                    opacity: 1,
+                    x: 0,
+                    transition: { duration: 0.2, ease: "easeOut" }
                 }
             }}
             className="flex flex-col overflow-visible group"
         >
             <div className="flex items-center gap-2 mb-1">
                 <div className="relative flex items-center justify-center">
-                    {Icon && <Icon className="w-3.5 h-3.5 text-blue-500/60 group-hover:text-blue-400 transition-colors z-10" />}
-                    {/* HUD spinning ring */}
-                    <motion.div 
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-                        className="absolute inset-[-4px] border border-blue-500/20 border-t-blue-500/60 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                    />
+                    {Icon && <Icon className="w-3.5 h-3.5 text-blue-500/60 transition-colors z-10" />}
+                    {/* HUD spinning ring - Static for Performance */}
+                    <div className="absolute inset-[-4px] border border-blue-500/10 border-t-blue-500/40 rounded-full opacity-60" />
                 </div>
                 <span className={cn(
                     "text-xs font-black text-zinc-400 uppercase tracking-[0.3em] italic leading-none pr-4",
                     isHighResPad && "text-[11px]"
                 )}>{label}</span>
             </div>
-            <motion.span 
+            <motion.span
                 animate={isPrimary ? { opacity: [1, 0.8, 1] } : {}}
                 transition={{ duration: 0.2, repeat: Infinity, repeatDelay: Math.random() * 5 }}
                 className={cn(
                     "text-[clamp(1.8rem,4.5vw,4.2rem)] font-black italic tracking-tighter leading-tight transition-all pr-8 overflow-visible",
                     isHighResPad ? "text-[clamp(1.6rem,4vw,3.2rem)]" : "",
-                    isPrimary ? "text-[#3b82f6] text-glow-blue" : "text-white group-hover:text-blue-100/90"
+                    isPrimary ? "text-[#3b82f6] text-glow-blue" : "text-white"
                 )}
             >
                 {value}
             </motion.span>
         </motion.div>
     );
-};
+});
 
 const MetadataBlock = ({ icon: Icon, label, value }) => {
     const { isHighResPad } = useResponsive();
@@ -259,25 +298,29 @@ const MetadataBlock = ({ icon: Icon, label, value }) => {
             )}>
                 <Icon className="w-6 md:w-8 h-6 md:h-8" />
             </div>
-        <div className="min-w-0 flex flex-col overflow-visible">
-            <p className="text-xs text-zinc-400 font-black uppercase tracking-widest mb-0.5 italic leading-snug pr-4 whitespace-nowrap">{label}</p>
-            <p className={cn(
-                "text-xl font-black italic text-zinc-100 leading-snug pr-6 whitespace-nowrap",
-                isHighResPad && "text-lg"
-            )}>{value}</p>
-        </div>
+            <div className="min-w-0 flex flex-col overflow-visible">
+                <p className="text-xs text-zinc-400 font-black uppercase tracking-widest mb-0.5 italic leading-snug pr-4 whitespace-nowrap">{label}</p>
+                <p className={cn(
+                    "text-xl font-black italic text-zinc-100 leading-snug pr-6 whitespace-nowrap",
+                    isHighResPad && "text-lg"
+                )}>{value}</p>
+            </div>
         </div>
     );
 };
 
-const BigAction = ({ icon: Icon, label, desc, color }) => {
+const BigAction = memo(({ icon: Icon, label, desc, color, onClick }) => {
     const { isHighResPad } = useResponsive();
     return (
-        <button className={cn(
-            "w-full max-w-sm p-8 rounded-[3rem] border-[3px] transition-all active:scale-95 group relative overflow-hidden flex items-center gap-6 text-left",
-            color === 'red' ? "bg-red-500/10 border-red-500/40 text-red-500 hover:bg-red-500/20 shadow-2xl" : "",
-            isHighResPad ? "p-6 scale-95" : "scale-110 lg:scale-120"
-        )}>
+        <motion.button
+            whileTap={{ scale: 0.92, filter: 'brightness(1.4)' }}
+            onClick={onClick}
+            className={cn(
+                "w-full max-w-sm p-8 rounded-[3rem] border-[3px] transition-all group relative overflow-hidden flex items-center gap-6 text-left shadow-2xl",
+                color === 'red' ? "bg-red-500/10 border-red-500/40 text-red-500 shadow-red-500/10" : "",
+                isHighResPad ? "p-6 scale-95" : "scale-110 lg:scale-120"
+            )}
+        >
             <div className={cn(
                 "w-16 h-16 rounded-[1.5rem] flex items-center justify-center bg-red-500/20",
                 isHighResPad && "w-12 h-12"
@@ -291,9 +334,9 @@ const BigAction = ({ icon: Icon, label, desc, color }) => {
                 )}>{label}</p>
                 <p className="text-[9px] font-black uppercase tracking-widest opacity-80 mt-2 leading-tight">{desc}</p>
             </div>
-            <div className="absolute inset-0 bg-gradient-to-r from-white/[0.08] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-        </button>
+            <div className="absolute inset-0 bg-gradient-to-r from-white/[0.08] to-transparent opacity-30" />
+        </motion.button>
     );
-};
+});
 
 export default MachineDetailPage;

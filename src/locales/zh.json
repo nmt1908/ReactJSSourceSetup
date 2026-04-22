@@ -39,5 +39,17 @@
   "mold_size": "模具尺寸",
   "mold_name": "模具名称",
   "article_color": "款式 / 配色",
-  "mold_id": "模具ID"
+  "mold_id": "模具ID",
+  "unmount_confirm_title": "确认下模？",
+  "unmount_confirm_msg": "系统将记录该设备的下模历史。",
+  "unmount_confirm_warning": "警告：此操作直接影响后续工序的数据。确认前请仔细核实。",
+  "cancel": "取消",
+  "confirm_unmount": "确认",
+  "unmount_success": "下模成功！",
+  "login_title": "系统身份验证",
+  "emp_no": "员工工号",
+  "password": "密码",
+  "please_login": "请输入凭据以访问系统",
+  "login_button": "登录",
+  "login_error": "员工号或密码错误！"
 }
