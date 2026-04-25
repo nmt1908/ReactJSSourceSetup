@@ -5,6 +5,7 @@ import { queryClient } from './api/queryClient';
 import { router } from './router';
 import './config/i18n';
 import './index.css';
+import DebugOverlay from '@/components/common/DebugOverlay';
 
 function App() {
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -25,15 +26,17 @@ function App() {
     }
   };
 
+  /* 
   // Fullscreen Overlay - Ref: IOTF3PadInput
+  // Vô hiệu hóa để tránh Reset trang khi bị văng Fullscreen
   if (!isFullscreen) {
     return (
       <button
+        type="button"
         className="fixed inset-0 z-[9999] bg-[#050505] flex flex-col items-center justify-center cursor-pointer border-none outline-none select-none overflow-hidden"
         onClick={enterFullscreen}
       >
         <div className="text-center relative">
-          {/* Decorative Glow */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-600/20 rounded-full blur-[100px] pointer-events-none" />
           
           <div className="relative z-10">
@@ -56,10 +59,12 @@ function App() {
       </button>
     );
   }
+  */
 
   return (
     <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
+        {/* <DebugOverlay /> */}
     </QueryClientProvider>
   );
 }

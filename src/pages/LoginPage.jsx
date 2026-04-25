@@ -6,6 +6,7 @@ import { ShieldCheck, User, Lock, Delete, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import useResponsive from '@/hooks/useResponsive';
 import { useAppStore } from '@/store/appStore';
+import { authApi } from '@/api/authApi';
 
 const LoginPage = () => {
     const { isHighResPad } = useResponsive();
@@ -43,17 +44,35 @@ const LoginPage = () => {
         setLoading(true);
         setError('');
 
-        // Simulating API call like F3 - Allowing any input for development
-        setTimeout(() => {
+        try {
+            const data = await authApi.login(empNo, password);
+            
+            if (data && data.empno) {
+                // Access Control Logic:
+                // 1. Must be in department VVG0DI
+                // 2. EXCEPT for account 047409 (LEO) - bypass dept check
+                const isAuthorized = (data.high_dept === 'VVG0DI') || (data.empno === '047409');
+
+                if (isAuthorized) {
+                    setUser({
+                        empNo: data.empno,
+                        name: data.name,
+                        dept: data.high_dept,
+                        token: data.session_token
+                    });
+                    navigate('/');
+                } else {
+                    setError('PHÒNG BAN KHÔNG ĐƯỢC PHÉP TRUY CẬP!');
+                }
+            } else {
+                setError(t('login_error') || 'SAI MÃ SỐ HOẶC MẬT KHẨU!');
+            }
+        } catch (err) {
+            console.error("Login detail error:", err);
+            setError('LỖI KẾT NỐI HỆ THỐNG ĐĂNG NHẬP!');
+        } finally {
             setLoading(false);
-            // Mock user data
-            setUser({
-                empNo,
-                name: 'TEST USER',
-                role: 'ADMIN'
-            });
-            navigate('/');
-        }, 800);
+        }
     };
 
     return (

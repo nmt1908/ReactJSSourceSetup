@@ -10,8 +10,11 @@ export const useAppStore = create(
         (set) => ({
             user: null,
             theme: 'light',
+            scannedQrData: null,
             setUser: (user) => set({ user }),
             setTheme: (theme) => set({ theme }),
+            setScannedQrData: (data) => set({ scannedQrData: data }),
+            clearScanData: () => set({ scannedQrData: null }),
             logout: () => set({ user: null }),
         }),
         {

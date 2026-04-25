@@ -4,6 +4,7 @@ import DashboardPage from '@/pages/DashboardPage';
 import MachineDetailPage from '@/pages/MachineDetailPage';
 import AboutPage from '@/pages/AboutPage';
 import LoginPage from '@/pages/LoginPage';
+import HistoryPage from '@/pages/HistoryPage';
 import { useAppStore } from '@/store/appStore';
 
 const AuthGuard = ({ children }) => {
@@ -32,6 +33,10 @@ export const router = createBrowserRouter([
             {
                 path: '/machine/:machineId',
                 element: <MachineDetailPage />,
+            },
+            {
+                path: '/history',
+                element: <HistoryPage />,
             },
             {
                 path: '/about',
