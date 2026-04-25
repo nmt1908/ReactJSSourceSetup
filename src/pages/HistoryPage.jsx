@@ -164,7 +164,7 @@ const HistoryPage = () => {
             </div>
 
             <div className="py-4 text-zinc-700 font-black tracking-[0.8em] text-[10px] uppercase italic opacity-40">
-                F1 WORKSHOP • DATA LOG ENGINE • V2.0
+                F1 WORKSHOP • DATA LOG ENGINE • V1.0
             </div>
 
             {/* Machine Selection Modal */}

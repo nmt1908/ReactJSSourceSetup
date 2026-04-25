@@ -124,8 +124,11 @@ const ManualMountForm = ({ isOpen, onClose, machineId, onMountSuccess, qrData = 
             }
         } catch (error) {
             console.error("❌ [API DEBUG] Error:", error);
-            setFetchError(error.response?.status === 404 
-                ? 'Không tìm thấy Mold ID tương ứng!' 
+            const isNotFound = error.response?.status === 404 || 
+                              error.message?.toLowerCase().includes('not found') ||
+                              error.toString().toLowerCase().includes('not found');
+            setFetchError(isNotFound 
+                ? 'Không tìm thấy khuôn' 
                 : 'Lỗi kết nối hệ thống!');
         } finally {
             setLoading(false);

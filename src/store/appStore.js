@@ -3,22 +3,28 @@
  * @author Nguyễn Minh Tâm (AKA LEO)
  */
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { createJSONStorage, persist } from 'zustand/middleware';
 
 export const useAppStore = create(
     persist(
         (set) => ({
             user: null,
             theme: 'light',
-            scannedQrData: null,
             setUser: (user) => set({ user }),
             setTheme: (theme) => set({ theme }),
-            setScannedQrData: (data) => set({ scannedQrData: data }),
-            clearScanData: () => set({ scannedQrData: null }),
             logout: () => set({ user: null }),
         }),
         {
-            name: 'app-storage',
+            name: 'app-session-storage',
+            storage: createJSONStorage(() => sessionStorage), // Thoát app là mất
         }
     )
 );
+
+// Store dành riêng cho dữ liệu quét QR (Chỉ lưu trong biến - RAM)
+export const useScanStore = create((set) => ({
+    scannedQrData: null,
+    setScannedQrData: (data) => set({ scannedQrData: data }),
+    clearScanData: () => set({ scannedQrData: null }),
+}));
+

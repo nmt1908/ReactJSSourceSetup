@@ -8,7 +8,7 @@ import useResponsive from '@/hooks/useResponsive';
 import Notification from '@/components/common/Notification';
 import { useNativeScanner } from '@/hooks/useNativeScanner';
 import { moldApi } from '@/api/moldApi';
-import { useAppStore } from '@/store/appStore';
+import { useAppStore, useScanStore } from '@/store/appStore';
 import ManualMountForm from '@/components/mold/ManualMountForm';
 
 const MachineDetailPage = () => {
@@ -18,9 +18,11 @@ const MachineDetailPage = () => {
     const navigate = useNavigate();
     const { t } = useTranslation();
     const user = useAppStore(state => state.user);
-    const scannedQrData = useAppStore(state => state.scannedQrData);
-    const setScannedQrData = useAppStore(state => state.setScannedQrData);
-    const clearScanData = useAppStore(state => state.clearScanData);
+    
+    // QR data is now in a separate, non-persisted store (RAM only)
+    const scannedQrData = useScanStore(state => state.scannedQrData);
+    const setScannedQrData = useScanStore(state => state.setScannedQrData);
+    const clearScanData = useScanStore(state => state.clearScanData);
 
     const [showConfirm, setShowConfirm] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
@@ -346,7 +348,7 @@ const MachineDetailPage = () => {
             />
 
             <div className="py-2 text-zinc-500 font-black tracking-[0.8em] text-[10px] uppercase italic opacity-60">
-                F1 WORKSHOP • v2.0
+                F1 WORKSHOP • v1.0
             </div>
         </div>
     );

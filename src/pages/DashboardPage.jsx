@@ -68,12 +68,20 @@ const DashboardPage = () => {
                 }, 1200);
             } else {
                 setScanStatus('error');
-                setStatusMessage(t('no_results') + `: ${rawQrData}`);
+                setStatusMessage("QR không hợp lệ" + `: ${rawQrData}`);
                 setTimeout(() => setScanStatus('idle'), 3000);
             }
         } catch (error) {
             setScanStatus('error');
-            setStatusMessage(t('connection_error') || "Server Connection Error");
+            // Kiểm tra cả mã lỗi 404 hoặc thông báo "not found" từ API
+            const isNotFound = error.response?.status === 404 || 
+                              error.message?.toLowerCase().includes('not found') ||
+                              error.toString().toLowerCase().includes('not found');
+                              
+            const errorMessage = isNotFound 
+                ? "QR không hợp lệ" 
+                : (t('connection_error') || "Server Connection Error");
+            setStatusMessage(errorMessage + `: ${rawQrData}`);
             setTimeout(() => setScanStatus('idle'), 3000);
         }
     };
@@ -307,7 +315,7 @@ const DashboardPage = () => {
             </div>
 
             <div className="py-4 text-zinc-500 font-black tracking-[0.8em] text-[10px] uppercase z-10 italic opacity-60">
-                PAD INPUT SYSTEM • F1 WORKSHOP • v2.0
+                PAD INPUT SYSTEM • F1 WORKSHOP • v1.0
             </div>
 
             {/* Status Overlay for visual feedback */}

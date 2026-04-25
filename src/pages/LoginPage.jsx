@@ -241,7 +241,7 @@ const LoginPage = () => {
 
             {/* Bottom Footer */}
             <div className="absolute bottom-6 text-zinc-500/30 font-black tracking-[0.6em] text-[9px] uppercase italic">
-                SECURE AUTHENTICATION GATEWAY • NITRO CORE V2.0 • {new Date().getFullYear()}
+                SECURE AUTHENTICATION GATEWAY • NITRO CORE V1.0 • {new Date().getFullYear()}
             </div>
         </div>
     );
