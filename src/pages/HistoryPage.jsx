@@ -27,13 +27,23 @@ const HistoryPage = () => {
     , []);
 
     const filteredHistory = useMemo(() => {
+        const getLocalDateStr = (date) => {
+            const d = new Date(date);
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        };
+
+        const targetDateStr = getLocalDateStr(selectedDate);
+
         return history.filter(item => {
             const matchesMachine = selectedMachine === 'ALL' || item.machine_id === selectedMachine;
             
-            // Filter by date (YYYY-MM-DD)
-            const itemDate = new Date(item.mounted_at).toISOString().split('T')[0];
-            const targetDate = selectedDate.toISOString().split('T')[0];
-            const matchesDate = itemDate === targetDate;
+            // Filter by date range (inclusive)
+            const mountDateStr = getLocalDateStr(item.mounted_at);
+            const unmountDateStr = item.unmounted_at ? getLocalDateStr(item.unmounted_at) : null;
+
+            // Record matches if targetDate is between mount and unmount dates (inclusive)
+            // or if it started on/before targetDate and is still running.
+            const matchesDate = targetDateStr >= mountDateStr && (!unmountDateStr || targetDateStr <= unmountDateStr);
             
             return matchesMachine && matchesDate;
         });
@@ -452,9 +462,14 @@ const HistoryRow = ({ item, index }) => {
                     <span className="text-zinc-200 font-black italic text-xs tracking-widest">{item.mounted_by}</span>
                     <div className="flex items-center gap-1.5 mt-0.5">
                         <Clock className="w-3 h-3 text-zinc-600" />
-                        <span className="text-[9px] text-zinc-500 font-bold tabular-nums italic">
-                            {new Date(item.mounted_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                        </span>
+                        <div className="flex flex-col">
+                            <span className="text-[10px] text-zinc-400 font-bold tabular-nums italic">
+                                {new Date(item.mounted_at).toLocaleDateString('sv-SE').replace(/-/g, '/')}
+                            </span>
+                            <span className="text-[9px] text-zinc-500 font-bold tabular-nums italic">
+                                {new Date(item.mounted_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true })}
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -470,9 +485,14 @@ const HistoryRow = ({ item, index }) => {
                             <span className="text-zinc-400 font-black italic text-xs tracking-widest">{item.unmounted_by || '----'}</span>
                             <div className="flex items-center gap-1.5 mt-0.5">
                                 <Clock className="w-3 h-3 text-zinc-600" />
-                                <span className="text-[9px] text-zinc-500 font-bold tabular-nums italic">
-                                    {new Date(item.unmounted_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                </span>
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] text-zinc-400 font-bold tabular-nums italic">
+                                        {new Date(item.unmounted_at).toLocaleDateString('sv-SE').replace(/-/g, '/')}
+                                    </span>
+                                    <span className="text-[9px] text-zinc-500 font-bold tabular-nums italic">
+                                        {new Date(item.unmounted_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true })}
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
