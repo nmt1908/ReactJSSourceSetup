@@ -221,8 +221,8 @@ const DatePickerModal = ({ isOpen, onClose, selectedDate, onSelect }) => {
     const nextMonth = () => setViewDate(new Date(year, month + 1, 1));
 
     const monthNames = [
-        "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
-        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"
+        t('month_jan'), t('month_feb'), t('month_mar'), t('month_apr'), t('month_may'), t('month_jun'),
+        t('month_jul'), t('month_aug'), t('month_sep'), t('month_oct'), t('month_nov'), t('month_dec')
     ];
 
     if (!isOpen) return null;
@@ -264,7 +264,7 @@ const DatePickerModal = ({ isOpen, onClose, selectedDate, onSelect }) => {
                     </div>
 
                     <div className="grid grid-cols-7 gap-3 mb-4">
-                        {['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'].map(d => (
+                        {[t('short_sun'), t('short_mon'), t('short_tue'), t('short_wed'), t('short_thu'), t('short_fri'), t('short_sat')].map(d => (
                             <div key={d} className="text-center text-[10px] font-black text-zinc-600 uppercase tracking-widest py-2">
                                 {d}
                             </div>
@@ -312,7 +312,7 @@ const DatePickerModal = ({ isOpen, onClose, selectedDate, onSelect }) => {
                         onClick={() => onSelect(new Date())}
                         className="mt-10 py-4 bg-blue-600/10 border border-blue-500/20 rounded-2xl text-blue-400 font-black italic uppercase tracking-widest text-xs hover:bg-blue-600/20 transition-all active:scale-95"
                     >
-                        {t('go_to_today') || 'DANH VỀ HÔM NAY'}
+                        {t('go_to_today') || 'QUAY VỀ HÔM NAY'}
                     </button>
                 </motion.div>
             </motion.div>

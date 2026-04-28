@@ -128,8 +128,8 @@ const ManualMountForm = ({ isOpen, onClose, machineId, onMountSuccess, qrData = 
                               error.message?.toLowerCase().includes('not found') ||
                               error.toString().toLowerCase().includes('not found');
             setFetchError(isNotFound 
-                ? 'Không tìm thấy khuôn' 
-                : 'Lỗi kết nối hệ thống!');
+                ? t('mold_not_found') 
+                : t('system_connection_error'));
         } finally {
             setLoading(false);
             setStep(4);

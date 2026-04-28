@@ -68,7 +68,7 @@ const DashboardPage = () => {
                 }, 1200);
             } else {
                 setScanStatus('error');
-                setStatusMessage("QR không hợp lệ" + `: ${rawQrData}`);
+                setStatusMessage(t('invalid_qr') + `: ${rawQrData}`);
                 setTimeout(() => setScanStatus('idle'), 3000);
             }
         } catch (error) {
@@ -79,7 +79,7 @@ const DashboardPage = () => {
                               error.toString().toLowerCase().includes('not found');
                               
             const errorMessage = isNotFound 
-                ? "QR không hợp lệ" 
+                ? t('invalid_qr') 
                 : (t('connection_error') || "Server Connection Error");
             setStatusMessage(errorMessage + `: ${rawQrData}`);
             setTimeout(() => setScanStatus('idle'), 3000);

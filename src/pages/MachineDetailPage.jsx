@@ -13,12 +13,12 @@ import ManualMountForm from '@/components/mold/ManualMountForm';
 
 const MachineDetailPage = () => {
     const { isHighResPad } = useResponsive();
-    
+
     const { machineId } = useParams();
     const navigate = useNavigate();
     const { t } = useTranslation();
     const user = useAppStore(state => state.user);
-    
+
     // QR data is now in a separate, non-persisted store (RAM only)
     const scannedQrData = useScanStore(state => state.scannedQrData);
     const setScannedQrData = useScanStore(state => state.setScannedQrData);
@@ -73,7 +73,7 @@ const MachineDetailPage = () => {
 
     const { startScan } = useNativeScanner(handleScanSuccess);
 
-    const handleMountSuccess = useCallback(( mold_id ) => {
+    const handleMountSuccess = useCallback((mold_id) => {
         console.log("🎊 [MACHINE PAGE] Mount success for:", mold_id);
         setNotification({
             show: true,
@@ -100,7 +100,7 @@ const MachineDetailPage = () => {
         } catch (error) {
             setNotification({
                 show: true,
-                message: `Lỗi hạ khuôn: ${error.message}`,
+                message: t('unmount_error', { error: error.message }),
                 type: 'error'
             });
         }
@@ -227,7 +227,7 @@ const MachineDetailPage = () => {
                                                     </div>
                                                     <div className="flex flex-col items-start">
                                                         <span className="text-white text-xl font-black italic uppercase tracking-widest">{t('scan_qr')}</span>
-                                                        <span className="text-blue-100/60 text-[10px] font-bold uppercase tracking-[0.2em]">Sử dụng Camera AI</span>
+                                                        <span className="text-blue-100/60 text-[10px] font-bold uppercase tracking-[0.2em]">{t('scan_qr_desc')}</span>
                                                     </div>
                                                 </div>
                                                 <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center group-active:scale-90 transition-transform">
@@ -249,7 +249,7 @@ const MachineDetailPage = () => {
                                                     </div>
                                                     <div className="flex flex-col items-start">
                                                         <span className="text-zinc-300 text-xl font-black italic uppercase tracking-widest">{t('manual_selection')}</span>
-                                                        <span className="text-zinc-600 text-[10px] font-bold uppercase tracking-[0.2em]">Nhập liệu bằng tay</span>
+                                                        <span className="text-zinc-600 text-[10px] font-bold uppercase tracking-[0.2em]">{t('manual_selection_desc')}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -339,7 +339,7 @@ const MachineDetailPage = () => {
                 }}
             />
 
-            <ManualMountForm 
+            <ManualMountForm
                 isOpen={showManualForm}
                 onClose={handleManualFormClose}
                 machineId={machineId}
