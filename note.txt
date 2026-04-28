@@ -1,0 +1,2 @@
+fix KEPS19 độ phân giải:
+Command: "adb -s KEP20231101822 shell wm density 240"
